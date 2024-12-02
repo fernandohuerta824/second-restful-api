@@ -1,10 +1,12 @@
 const { Router } = require('express')
+const Products = require('./../models/Products')
 
 const router = Router()
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
+    const products = await Products.find()
     res.status(200).json({
-        "message": 'GET /products'
+        products
     })
 })
 

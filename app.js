@@ -4,7 +4,7 @@ const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const productsRoutes = require('./routes/products')
 const ordersRoutes = require('./routes/orders')
-
+const db = require('./utils/database')
 
 const app = express()
 
@@ -27,7 +27,6 @@ app.use(bodyParser.json())
 app.use('/products', productsRoutes)
 app.use('/orders', ordersRoutes)
 
-
 const server = http.createServer(app)
 
 app.use((req, res, next) => {
@@ -43,4 +42,8 @@ app.use((error, req, res, next) => {
     })
 })
 
-server.listen(PORT, () => console.log('Server running on port ' + PORT))
+db
+    .then(() => {
+        server.listen(PORT, () => console.log('Server running on port ' + PORT))
+    })
+    .catch(e => console.log(e))
