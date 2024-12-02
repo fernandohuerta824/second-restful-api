@@ -4,22 +4,38 @@ const Products = require('./../models/Products')
 const router = Router()
 
 router.get('/', async (req, res) => {
-    const products = await Products.find()
-    res.status(200).json({
-        products
-    })
+    try {
+        const products = await Products.find()
+        res.status(200).json({
+            products
+        })
+    } catch(error) {
+        error.status = 500
+        error.message = 'Something failed'
+        next(error)
+    }
+
 })
 
-router.post('/', (req, res) => {
-    const { name, price } = req.body
-    res.status(201).json({
-        "message": 'POST /products',
-        "product": {
-            id: '4272324',
-            name,
-            price
-        }
-    })
+router.post('/', async (req, res) => {
+    try {
+        const { title, price, imageURL, description} = req.body
+        const product = new Products({
+            title,
+            price,
+            imageURL,
+            description
+        })
+
+        await product.save()
+        res.status(201).json({
+            product
+        })
+    } catch(error) {
+        error.status = 500
+        error.message = 'Something failed'
+        next(error)
+    }
 })
 
 router.get('/:id', (req, res) => {
